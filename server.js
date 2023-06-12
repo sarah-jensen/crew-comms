@@ -1,9 +1,9 @@
 require("dotenv").config();
 const express = require('express');
-// const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 const routes = require('./routes');
-const mongoose = require('./config/connection');
+const db = require('./config/connection');
 
 const PORT = process.env.PORT;
 const app = express();
@@ -17,8 +17,6 @@ mongoose.connect(process.env.CONNECTION)
         console.log('Connected to crewcommsDB.')
     })
 
-mongoose.once('open', () => {
-    app.listen(PORT, () => {
+   app.listen(PORT, () => {
         console.log(`Crew Comms app listening at http://localhost:${PORT}`);
     });
-});
