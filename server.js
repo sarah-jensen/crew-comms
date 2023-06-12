@@ -1,17 +1,24 @@
-
+require("dotenv").config();
 const express = require('express');
-const db = require('./config/connection');
-const routes = require('./routes');
+// const mongoose = require('mongoose');
 
-const port = process.env.PORT;
+const routes = require('./routes');
+const mongoose = require('./config/connection');
+
+const PORT = process.env.PORT;
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(routes);
 
-db.once('open', () => {
+mongoose.connect(process.env.CONNECTION)
+    .then(() => {
+        console.log('Connected to crewcommsDB.')
+    })
+
+mongoose.once('open', () => {
     app.listen(PORT, () => {
-        console.log(`Crew Comms app listening at http://localhost:${port}`);
+        console.log(`Crew Comms app listening at http://localhost:${PORT}`);
     });
 });
