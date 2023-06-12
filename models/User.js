@@ -12,8 +12,13 @@ const userSchema = new Schema(
             type: String,
             required: true,
             unique: true,
-            match: [/^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/, "Not a valid email address"],
-        },
+            validate: {
+                validator: function(v) {
+                    return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v);
+                },
+                message: "Please enter a valid email"
+            },
+            },
         thoughts: {
             type: Schema.Types.ObjectId,
             ref: 'thought',
@@ -33,9 +38,7 @@ const userSchema = new Schema(
     }
 );
 
-email.validate(function (err) {
-    console.log(String(err));
-});
+
 
 //virtual property to get a user's number of friends
 userSchema.virtual('friendCount').get(function () {
