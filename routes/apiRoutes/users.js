@@ -12,7 +12,7 @@ router.route('/')
     .get(getUsers)
     .post(createUser);
 
-// /apiRoutes/user/:userId
+// /apiRoutes/users/:userId
 router.route('/:userId')
     .get(getSingleUser)
     .put(updateUser)
