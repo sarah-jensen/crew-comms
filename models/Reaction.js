@@ -2,10 +2,6 @@ const { Schema, Types } = require('mongoose');
 
 const reactionSchema = new Schema(
     {
-        reactionId: {
-            type: Schema.Types.ObjectId,
-            default: () => new Types.ObjectId(),
-        },
         reactionBody: {
             type: String,
             required: true,
@@ -18,7 +14,7 @@ const reactionSchema = new Schema(
         createdAt: {
             type: Date,
         default: Date.now,
-        get: (date) => date.toLocaleDataString("en-US"),
+        get: (date) => date.toLocaleDateString("en-US"),
         }
     },
     {
