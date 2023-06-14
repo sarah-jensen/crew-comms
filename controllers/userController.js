@@ -1,4 +1,4 @@
-const { User } = require('../models');
+const { User, Thought } = require('../models');
 
 module.exports = {
     //GET all users
@@ -65,19 +65,65 @@ module.exports = {
         }
     },
 
-    //DELETE user by _id and remove associated thoughts
+    //DELETE user by _id 
     async deleteUser(req, res) {
         try {
             const user = await User.findOneAndDelete({ _id: req.params.userId });
             if (!user) {
                 return res.json({ message: 'No user with this id' });
             }
-            res.json(user);
-
-            await Thought.deleteMany({ _id: { $in: user.thoughts } });
+            console.log(user);
+            //delete user's associated thoughts
+            await Thought.deleteMany({ _id: { $in: req.body.userId } });
             res.json({ message: 'User and thoughts deleted' });
         } catch (err) {
+            console.log(err);
             res.status(500).json(err);
         }
     },
+
+    //POST a new friend to a user's friend list
+    async addFriend(req, res) {
+        try {
+            console.log('Adding friend');
+            console.log(req.body);
+            const user = await User.findByIdAndUpdate(
+                {_id: req.params.userId },
+                { $addToSet: {friends: req.body }},
+                { new: true },
+            );
+    
+            if(!user) {
+                return res
+                    .status(404)
+                    .json({ message: 'No user found with that ID' })
+            };
+            res.json(user);
+        } catch (err) {
+            console.log(err);
+            res.status(500).json(err);
+        }
+    },
+
+    //DELETE a friend from a user's friend list
+    async deleteFriend(req, res) {
+        try{
+            console.log('Deleting friend');
+            console.log(req.body);
+            const user = await User.findByIdAndUpdate(
+                {_id: req.params.userId },
+                { $pull: {friends: req.body.friendId } },
+                { new: true },
+            );
+            if(!user) {
+                return res
+                    .status(404)
+                    .json({ message: 'No user found with that ID' })
+            };
+            console.log(user);
+            res.json({ message: 'Friend deleted' })
+        } catch (err) {
+            res.status(500).json(err);
+        }
+    }
 };
